@@ -87,3 +87,5 @@ ENV/
 
 # Rope project settings
 .ropeproject
+#restrict python pyc files
+*.pyc
