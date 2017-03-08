@@ -3,7 +3,7 @@
 # @Email:  tamyworld@gmail.com
 # @Filename: settings.py
 # @Last modified by:   tushar
-# @Last modified time: 2017-02-19T18:53:19+05:30
+# @Last modified time: 2017-02-27T23:39:18+05:30
 
 
 
@@ -19,6 +19,13 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+from elasticsearch import Elasticsearch, RequestsHttpConnection
+#elastic search settings
+ES_CLIENT = Elasticsearch(
+['http://127.0.0.1:9200/'],
+connection_class=RequestsHttpConnection
+)
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -46,7 +53,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
-    'django_extensions'
+    'django_extensions',
+    'elasticsearch'
 )
 
 MIDDLEWARE_CLASSES = (

@@ -3,12 +3,14 @@
 # @Email:  tamyworld@gmail.com
 # @Filename: models.py
 # @Last modified by:   tushar
-# @Last modified time: 2017-02-19T20:57:50+05:30
+# @Last modified time: 2017-03-08T11:50:13+05:30
 
 
 
 from django.db import models
 from django.contrib.auth.models import User
+import django.db.models.options as options
+options.DEFAULT_NAMES=options.DEFAULT_NAMES+('es_index_name','es_type_name','es_mapping')
 
 # Create your models here.
 class Product(models.Model):
@@ -22,6 +24,48 @@ class Product(models.Model):
     product_type=models.CharField(choices=CHOICES,max_length=50,default='downloadable_field')
     def __unicode__(self):
         return self.name
+    def es_repr(self):
+        data={
+            "name":self.name,
+            "price":self.price,
+            "category":{
+                "name": self.category.name,
+            },
+            "subcategory":{
+                "name": self.subcategory.name,
+            },
+            "seller":{
+                "email": self.seller.user.email,
+            },
+            "product_type":self.product_type
+        }
+        return data
+
+    class Meta:
+        es_index_name='ecommerce'
+        es_type_name='products'
+        es_mapping={
+            'properties':{
+                'name':{'type':'text'},
+                'price':{'type':"long"},
+                'category':{
+                        'properties':{
+                            'name':{'type':'keyword'},
+                        }
+                    },
+                'subcategory':{
+                        'properties':{
+                            'name':{'type':'keyword'},
+                        }
+                    },
+                'seller':{
+                    'properties':{
+                        'email':{'type':'text'}
+                        }
+                    },
+                'product_type':{'type':"keyword"},
+                }
+        }
 
 class Category(models.Model):
     """Category Model"""
